@@ -11,6 +11,7 @@
       color: #333;
       text-align: center;
       padding: 30px;
+      overflow-x: hidden;
     }
 
     h1 {
@@ -22,7 +23,6 @@
       margin: 20px auto;
       max-width: 600px;
       font-size: 1.2em;
-
       padding: 20px;
       border-radius: 20px;
       box-shadow: 2px 2px 15px rgba(0,0,0,0.1);
@@ -76,31 +76,40 @@
       75%  { transform: translateY(10px); }
       100% { transform: translateY(0); }
     }
+
     .throw-img {
-  position: absolute;
-  width: 80px;
-  height: auto;
-  pointer-events: none;
-  animation: throw 2s ;
-  z-index: 999;
-}
+      position: absolute;
+      width: 80px;
+      height: auto;
+      pointer-events: none;
+      animation: throw 2s;
+      z-index: 999;
+    }
 
-@keyframes throw {
-  0% {
-    transform: scale(0.5) translate(0, 0) rotate(0deg);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.5) translate(calc(var(--x) * 0.5), calc(var(--y) * 0.5)) rotate(360deg);
-  }
-  100% {
-    transform: scale(2) translate(var(--x), var(--y)) rotate(720deg);
-    opacity: 0;
-  }
-}
+    @keyframes throw {
+      0% {
+        transform: scale(0.5) translate(0, 0) rotate(0deg);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.5) translate(calc(var(--x) * 0.5), calc(var(--y) * 0.5)) rotate(360deg);
+      }
+      100% {
+        transform: scale(2) translate(var(--x), var(--y)) rotate(720deg);
+        opacity: 0;
+      }
+    }
 
+    select {
+      font-size: 1.2em;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
 
-
+    #mainContent {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -111,83 +120,124 @@
     Your browser does not support the audio element.
   </audio>
 
-  <!-- 🟢 Play Button (Icon) -->
-  <button class="play-icon" onclick="toggleAudio()" id="play-btn">▶️</button>
-  <p><span style="font-size: 2em; font-weight: bold; color: #ff1493;">PLAY BHAI</span><br><br></p>
+  <!-- 🎛️ Name Select -->
+  <select id="nameSelect" onchange="updateContent()">
+    <option value="">Select Your Name</option>
+    <option value="shaurya">Shaurya</option>
+    <option value="ankita">Ankita</option>
+    <option value="nishita">Nishita</option>
+  </select>
 
-  <h1>Happy Friendship Day, SHAURYA! 💖</h1>
+  <!-- All content shown after name selected -->
+  <div id="mainContent">
+    <!-- 🟢 Play Button -->
+    <button class="play-icon" onclick="toggleAudio()" id="play-btn">▶️</button>
+    <p><span style="font-size: 2em; font-weight: bold; color: #ff1493;">PLAY BHAI</span><br><br></p>
 
-  <div class="message">
-    <p>
-      <span style="font-size: 2em; font-weight: bold; color: #ff1493;">Oi Bhadwe,</span><br><br>
-      Just wanted to let you know how grateful I am to have you in my life. From silly chats to serious talks, every moment is special. Wishing you the happiest Friendship Day! 💫
-    </p>
+    <!-- 🎉 Title -->
+    <h1 id="title">Happy Friendship Day!</h1>
+
+    <!-- 🌟 Main Image -->
+    <img id="mainImage" class="photo" src="" alt="Friend Image" />
+
+    <!-- 💬 Message -->
+    <div class="message" id="messageText"></div>
+
+    <!-- 💃🕺 Dancing -->
+    <div class="dance" id="dancer">💃🕺🎉🎶</div>
   </div>
 
-  <img src="pic.png.jpg" style="width: 200px; height: auto;" />
-
-
-  <!-- 🕺 Dancing emojis/text -->
-  <div class="dance" id="dancer">💃🕺🎉🎶</div>
-
-
-
   <script>
-  const audio = document.getElementById("bg-audio");
-  const playBtn = document.getElementById("play-btn");
-  const dancer = document.getElementById("dancer");
-  let isPlaying = false;
-  let throwInterval;
+    const audio = document.getElementById("bg-audio");
+    const playBtn = document.getElementById("play-btn");
+    const dancer = document.getElementById("dancer");
+    const mainContent = document.getElementById("mainContent");
+    let isPlaying = false;
+    let throwInterval;
 
-  function throwBurst(count = 20) {
-    for (let i = 0; i < count; i++) {
-      const img = document.createElement("img");
-      img.src = "he.png.jpg"; // your image
-      img.classList.add("throw-img");
+    function throwBurst(count = 20) {
+      const name = document.getElementById("nameSelect").value;
+      const emojiSrc = {
+        shaurya: "he.png.jpg",
+        ankita: "he.png.jpg",
+        nishita: "he.png.jpg"
+      }[name.toLowerCase()];
 
-      // Random start location
-      const startX = window.innerWidth / 2;
-      const startY = window.innerHeight / 2;
+      for (let i = 0; i < count; i++) {
+        const img = document.createElement("img");
+        img.src = emojiSrc;
+        img.classList.add("throw-img");
 
+        const startX = window.innerWidth / 2;
+        const startY = window.innerHeight / 2;
 
-      // Random throw direction
-      const endX = (Math.random() - 0.5) * 1000;
-      const endY = (Math.random() - 0.5) * 1000;
+        const endX = (Math.random() - 0.5) * 1000;
+        const endY = (Math.random() - 0.5) * 1000;
 
-      img.style.left = `${startX}px`;
-      img.style.top = `${startY}px`;
-      img.style.setProperty("--x", `${endX}px`);
-      img.style.setProperty("--y", `${endY}px`);
+        img.style.left = `${startX}px`;
+        img.style.top = `${startY}px`;
+        img.style.setProperty("--x", `${endX}px`);
+        img.style.setProperty("--y", `${endY}px`);
 
-      document.body.appendChild(img);
-
-      setTimeout(() => {
-        img.remove();
-      }, 2000);
+        document.body.appendChild(img);
+        setTimeout(() => img.remove(), 2000);
+      }
     }
-  }
 
-  function toggleAudio() {
-    if (isPlaying) {
-      audio.pause();
-      playBtn.textContent = "▶️";
-      dancer.style.display = "none";
-      clearInterval(throwInterval);
-    } else {
-      audio.play();
-      playBtn.textContent = "⏸️";
-      dancer.style.display = "block";
-
-      // Burst once on play
-      throwBurst(25);
-
-      // Continue throwing in intervals if desired
-      throwInterval = setInterval(() => throwBurst(10), 2000);
+    function toggleAudio() {
+      if (isPlaying) {
+        audio.pause();
+        playBtn.textContent = "▶️";
+        dancer.style.display = "none";
+        clearInterval(throwInterval);
+      } else {
+        audio.play();
+        playBtn.textContent = "⏸️";
+        dancer.style.display = "block";
+        throwBurst(25);
+        throwInterval = setInterval(() => throwBurst(10), 2000);
+      }
+      isPlaying = !isPlaying;
     }
-    isPlaying = !isPlaying;
-  }
-</script>
 
+    function updateContent() {
+      const name = document.getElementById("nameSelect").value.toLowerCase();
+      const title = document.getElementById("title");
+      const messageText = document.getElementById("messageText");
+      const mainImage = document.getElementById("mainImage");
+
+      if (!name) {
+        mainContent.style.display = "none";
+        return;
+      }
+
+      mainContent.style.display = "block";
+
+      if (name === "shaurya") {
+        title.innerHTML = "Happy Friendship Day, SHAURYA! 💖";
+        messageText.innerHTML = `
+          <span style="font-size: 2em; font-weight: bold; color: #ff1493;">Oi Bhadwe,</span><br><br>
+          Just wanted to let you know how grateful I am to have you in my life. From silly chats to serious talks, every moment is special. Wishing you the happiest Friendship Day! 💫
+        `;
+        mainImage.src = "pic.png.jpg";
+      } else if (name === "ankita") {
+        title.innerHTML = "Happy Friendship Day, Ankita! 💖";
+        messageText.innerHTML = `
+          <span style="font-size: 2em; font-weight: bold; color: #ff1493;">oi ankita  ✨</span><br><br>
+          You're an amazing friend with a golden heart. Thank you for always being there. I hope ham ese hi gossip karte rahee 😁😁😁. Happy Friendship Day! 🌸💫
+        `;
+        mainImage.src = "ankita.png.jpg";
+      } else if (name === "nishita") {
+        title.innerHTML = "Happy Friendship Day, Nishita! 💖";
+        messageText.innerHTML = `
+          <span style="font-size: 2em; font-weight: bold; color: #ff1493;">oi!</span><br><br>
+          Every hangout, every laugh, and every talk counts. Thanks for the memories, bro.Broski eh thakim turr😊😊😊 Happy Friendship Day! 🎉🔥
+        `;
+        mainImage.src = "nishita.png.jpg";
+      }
+    }
+  </script>
 
 </body>
 </html>
+
