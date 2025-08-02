@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Friendship Day</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background: linear-gradient(to right, #f9d5ec, #ffe4c4);
+      color: #333;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 {
+      font-size: 3em;
+      color: #ff69b4;
+    }
+
+    .message {
+      margin: 20px auto;
+      max-width: 600px;
+      font-size: 1.2em;
+      background: white;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 2px 2px 15px rgba(0,0,0,0.1);
+    }
+
+    .photo {
+      width: 150px;
+      border-radius: 15px;
+      margin: 15px 0;
+      animation: spin 2s ease-out;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg) scale(0.5);
+        opacity: 0;
+      }
+      to {
+        transform: rotate(360deg) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .play-icon {
+      font-size: 3em;
+      background: #ff69b4;
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      margin-bottom: 20px;
+      box-shadow: 2px 2px 15px rgba(0,0,0,0.2);
+    }
+
+    .play-icon:hover {
+      background-color: #ff1493;
+    }
+
+    .dance {
+      font-size: 2em;
+      margin-top: 20px;
+      display: none;
+      animation: dance 1s infinite;
+    }
+
+    @keyframes dance {
+      0%   { transform: translateY(0); }
+      25%  { transform: translateY(-10px); }
+      50%  { transform: translateY(0); }
+      75%  { transform: translateY(10px); }
+      100% { transform: translateY(0); }
+    }
+    .throw-img {
+  position: absolute;
+  width: 80px;
+  height: auto;
+  pointer-events: none;
+  animation: throw 2s ;
+  z-index: 999;
+}
+
+@keyframes throw {
+  0% {
+    transform: scale(0.5) translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5) translate(calc(var(--x) * 0.5), calc(var(--y) * 0.5)) rotate(360deg);
+  }
+  100% {
+    transform: scale(2) translate(var(--x), var(--y)) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+
+
+  </style>
+</head>
+<body>
+
+  <!-- 🎵 Audio -->
+  <audio id="bg-audio" loop>
+    <source src="song.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- 🟢 Play Button (Icon) -->
+  <button class="play-icon" onclick="toggleAudio()" id="play-btn">▶️</button>
+
+  <h1>Happy Friendship Day, SHAURYA! 💖</h1>
+
+  <div class="message">
+    <p>
+      <span style="font-size: 2em; font-weight: bold; color: #ff1493;">Oi Bhadwe,</span><br><br>
+      Just wanted to let you know how grateful I am to have you in my life. From silly chats to serious talks, every moment is special. Wishing you the happiest Friendship Day! 💫
+    </p>
+  </div>
+
+  <img src="pic.png.jpg" style="width: 200px; height: auto;" />
+
+
+  <!-- 🕺 Dancing emojis/text -->
+  <div class="dance" id="dancer">💃🕺🎉🎶</div>
+
+  <script>
+  const audio = document.getElementById("bg-audio");
+  const playBtn = document.getElementById("play-btn");
+  const dancer = document.getElementById("dancer");
+  let isPlaying = false;
+  let throwInterval;
+
+  function throwBurst(count = 20) {
+    for (let i = 0; i < count; i++) {
+      const img = document.createElement("img");
+      img.src = "he.png.jpg"; // your image
+      img.classList.add("throw-img");
+
+      // Random start location
+      const startX = window.innerWidth / 2;
+      const startY = window.innerHeight / 2;
+
+
+      // Random throw direction
+      const endX = (Math.random() - 0.5) * 1000;
+      const endY = (Math.random() - 0.5) * 1000;
+
+      img.style.left = `${startX}px`;
+      img.style.top = `${startY}px`;
+      img.style.setProperty("--x", `${endX}px`);
+      img.style.setProperty("--y", `${endY}px`);
+
+      document.body.appendChild(img);
+
+      setTimeout(() => {
+        img.remove();
+      }, 2000);
+    }
+  }
+
+  function toggleAudio() {
+    if (isPlaying) {
+      audio.pause();
+      playBtn.textContent = "▶️";
+      dancer.style.display = "none";
+      clearInterval(throwInterval);
+    } else {
+      audio.play();
+      playBtn.textContent = "⏸️";
+      dancer.style.display = "block";
+
+      // Burst once on play
+      throwBurst(25);
+
+      // Continue throwing in intervals if desired
+      throwInterval = setInterval(() => throwBurst(10), 2000);
+    }
+    isPlaying = !isPlaying;
+  }
+</script>
+
+
+</body>
+</html>
